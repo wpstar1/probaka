@@ -1,0 +1,39 @@
+# robots.txt for https://probaka-642f.vercel.app/
+# 바카라 AI 분석표 - 에볼루션 카지노, 보타카지노 전용 분석기
+
+# Allow all web crawlers
+User-agent: *
+Allow: /
+
+# Block admin pages
+Disallow: /admin.html
+
+# Sitemap location
+Sitemap: https://probaka-642f.vercel.app/sitemap.xml
+
+# Crawl-delay
+Crawl-delay: 1
+
+# Specific rules for major search engines
+User-agent: Googlebot
+Allow: /
+Disallow: /admin.html
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+Disallow: /admin.html
+
+User-agent: Yandex
+Allow: /
+Disallow: /admin.html
+
+User-agent: Naverbot
+Allow: /
+Disallow: /admin.html
+
+User-agent: DaumBot
+Allow: /
+Disallow: /admin.html
