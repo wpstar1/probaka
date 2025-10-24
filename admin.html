@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html class="dark" lang="ko">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>배너 관리자 - Baccarat AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#FFD700",
+            "background-dark": "#0D1B2A",
+            "surface-dark": "#172A3A",
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-background-dark text-white min-h-screen">
+  <div class="container mx-auto px-4 py-8 max-w-4xl">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-primary mb-2">배너 관리자</h1>
+      <p class="text-gray-400">주요기능 섹션 위에 표시될 배너를 관리합니다.</p>
+      <a href="index.html" class="inline-block mt-4 px-4 py-2 bg-surface-dark text-white rounded-lg hover:bg-surface-dark/80 transition">
+        <span class="material-symbols-outlined text-sm align-middle">arrow_back</span>
+        메인 페이지로 돌아가기
+      </a>
+    </div>
+
+    <!-- 배너 선택 탭 -->
+    <div class="bg-surface-dark rounded-xl p-4 mb-6">
+      <div class="flex gap-3">
+        <button id="tab-main-banner" class="flex-1 px-6 py-3 bg-primary text-black font-bold rounded-lg transition">
+          상단 배너 (주요기능 위)
+        </button>
+        <button id="tab-pattern-banner" class="flex-1 px-6 py-3 bg-background-dark text-white font-bold rounded-lg hover:bg-primary hover:text-black transition">
+          패턴 분석기 배너
+        </button>
+      </div>
+    </div>
+
+    <!-- 배너 설정 -->
+    <div class="bg-surface-dark rounded-xl p-6 mb-6">
+      <h2 class="text-xl font-bold text-primary mb-4" id="banner-title">상단 배너 설정 (주요기능 위)</h2>
+
+      <!-- 배너 활성화/비활성화 -->
+      <div class="mb-6">
+        <label class="flex items-center justify-between p-4 bg-background-dark rounded-lg cursor-pointer">
+          <span class="text-white font-medium">배너 활성화</span>
+          <div class="relative">
+            <input type="checkbox" id="banner-active" class="sr-only peer">
+            <div class="w-14 h-7 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary"></div>
+          </div>
+        </label>
+      </div>
+
+      <!-- 배너 이미지 업로드 -->
+      <div class="mb-4">
+        <label class="block text-white font-medium mb-2">
+          배너 이미지 업로드
+          <span class="text-sm text-gray-400 font-normal ml-2">(JPG, PNG, GIF, WebP)</span>
+        </label>
+        <div class="flex flex-col gap-3">
+          <label for="banner-image" class="flex items-center justify-center w-full h-32 px-4 py-6 bg-background-dark border-2 border-dashed border-gray-700 rounded-lg cursor-pointer hover:border-primary transition">
+            <div class="flex flex-col items-center justify-center text-center">
+              <span class="material-symbols-outlined text-4xl text-primary mb-2">cloud_upload</span>
+              <p class="text-sm text-white">클릭하여 이미지 선택</p>
+              <p class="text-xs text-gray-500 mt-1">또는 파일을 드래그 앤 드롭</p>
+            </div>
+          </label>
+          <input
+            type="file"
+            id="banner-image"
+            accept="image/*"
+            class="hidden"
+          />
+          <div id="image-info" class="hidden">
+            <div class="flex items-center justify-between p-3 bg-background-dark border border-primary/30 rounded-lg">
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-primary">image</span>
+                <div>
+                  <p class="text-white text-sm font-medium" id="file-name">파일명.jpg</p>
+                  <p class="text-gray-400 text-xs" id="file-size">0 KB</p>
+                </div>
+              </div>
+              <button type="button" id="remove-image" class="text-red-500 hover:text-red-400 transition">
+                <span class="material-symbols-outlined">close</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <p class="text-xs text-gray-500 mt-2">권장 크기: 최소 1200x200px (반응형으로 자동 조정됩니다)</p>
+        <p class="text-xs text-green-500 mt-1">✅ 업로드된 이미지는 자동으로 최적화되어 압축됩니다.</p>
+        <p class="text-xs text-gray-400 mt-1">• 가로 크기는 최대 1200px로 조정됩니다.</p>
+        <p class="text-xs text-gray-400">• 품질은 80%로 압축됩니다 (필요시 자동으로 더 압축).</p>
+      </div>
+
+      <!-- 배너 링크 URL -->
+      <div class="mb-4">
+        <label class="block text-white font-medium mb-2">
+          배너 클릭 시 이동할 링크 URL
+          <span class="text-sm text-gray-400 font-normal ml-2">(선택사항)</span>
+        </label>
+        <input
+          type="text"
+          id="banner-link"
+          placeholder="https://example.com"
+          class="w-full px-4 py-3 bg-background-dark text-white border border-gray-700 rounded-lg focus:outline-none focus:border-primary"
+        />
+      </div>
+
+      <!-- 새 탭에서 열기 옵션 -->
+      <div class="mb-6">
+        <label class="flex items-center p-4 bg-background-dark rounded-lg cursor-pointer">
+          <input type="checkbox" id="banner-target-blank" class="w-5 h-5 text-primary bg-gray-700 border-gray-600 rounded focus:ring-primary focus:ring-2">
+          <span class="ml-3 text-white">새 탭에서 링크 열기</span>
+        </label>
+      </div>
+
+      <!-- 배너 Alt 텍스트 -->
+      <div class="mb-6">
+        <label class="block text-white font-medium mb-2">
+          배너 Alt 텍스트
+          <span class="text-sm text-gray-400 font-normal ml-2">(SEO 및 접근성)</span>
+        </label>
+        <input
+          type="text"
+          id="banner-alt"
+          placeholder="배너 설명"
+          class="w-full px-4 py-3 bg-background-dark text-white border border-gray-700 rounded-lg focus:outline-none focus:border-primary"
+        />
+      </div>
+
+      <!-- 저장 버튼 -->
+      <div class="flex flex-col gap-3">
+        <div class="flex gap-3">
+          <button
+            id="save-banner"
+            class="flex-1 px-6 py-3 bg-primary text-black font-bold rounded-lg hover:bg-primary/90 transition"
+          >
+            저장하기
+          </button>
+          <button
+            id="delete-banner"
+            class="px-6 py-3 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition"
+          >
+            삭제
+          </button>
+        </div>
+        <button
+          id="save-and-preview"
+          class="w-full px-6 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition flex items-center justify-center gap-2"
+        >
+          <span class="material-symbols-outlined">visibility</span>
+          저장하고 메인 페이지에서 확인하기
+        </button>
+      </div>
+    </div>
+
+    <!-- 미리보기 -->
+    <div class="bg-surface-dark rounded-xl p-6">
+      <h2 class="text-xl font-bold text-primary mb-4">미리보기</h2>
+      <div id="banner-preview" class="bg-background-dark rounded-lg p-4 min-h-[200px] flex items-center justify-center">
+        <p class="text-gray-500">배너 이미지를 업로드하면 여기에 미리보기가 표시됩니다.</p>
+      </div>
+    </div>
+
+    <!-- 알림 메시지 -->
+    <div id="notification" class="fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg transform translate-x-[400px] transition-transform duration-300 z-50">
+    </div>
+  </div>
+
+  <script>
+    // 현재 선택된 배너 타입 ('main' 또는 'pattern')
+    let currentBannerType = 'main';
+
+    // 현재 업로드된 이미지 데이터
+    let uploadedImageData = null;
+
+    // 알림 표시 함수
+    function showNotification(message, type = 'success') {
+      const notification = document.getElementById('notification');
+      notification.textContent = message;
+      notification.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg transform transition-transform duration-300 z-50 ${
+        type === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
+      }`;
+      notification.style.transform = 'translateX(0)';
+
+      setTimeout(() => {
+        notification.style.transform = 'translateX(400px)';
+      }, 3000);
+    }
+
+    // 파일 크기를 포맷팅하는 함수
+    function formatFileSize(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+    }
+
+    // 이미지 압축 및 리사이즈 함수
+    function compressImage(file, maxWidth = 1200, quality = 0.8) {
+      return new Promise((resolve, reject) => {
+        // 이미지 파일 타입 체크
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('이미지 파일만 업로드 가능합니다.'));
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = new Image();
+          img.onload = function() {
+            // Canvas 생성
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            // 이미지 크기 계산 (가로 최대 1200px로 제한)
+            let width = img.width;
+            let height = img.height;
+
+            if (width > maxWidth) {
+              height = (height * maxWidth) / width;
+              width = maxWidth;
+            }
+
+            // Canvas 크기 설정
+            canvas.width = width;
+            canvas.height = height;
+
+            // 이미지 그리기
+            ctx.drawImage(img, 0, 0, width, height);
+
+            // 압축된 이미지를 base64로 변환 (JPEG, 품질 80%)
+            const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+
+            console.log('원본 크기:', formatFileSize(file.size));
+            console.log('압축 후 크기:', formatFileSize(compressedDataUrl.length * 0.75)); // base64는 약 33% 더 큼
+
+            resolve(compressedDataUrl);
+          };
+          img.onerror = function() {
+            reject(new Error('이미지를 불러올 수 없습니다.'));
+          };
+          img.src = e.target.result;
+        };
+        reader.onerror = function() {
+          reject(new Error('파일을 읽는 중 오류가 발생했습니다.'));
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // 이미지 파일 처리
+    async function handleImageUpload(file) {
+      // 파일 크기 체크 (20MB 제한 - 압축 전)
+      if (file.size > 20 * 1024 * 1024) {
+        showNotification('파일 크기는 20MB 이하여야 합니다.', 'error');
+        return;
+      }
+
+      // 이미지 파일 타입 체크
+      if (!file.type.startsWith('image/')) {
+        showNotification('이미지 파일만 업로드 가능합니다.', 'error');
+        return;
+      }
+
+      // 파일 정보 표시
+      document.getElementById('file-name').textContent = file.name;
+      document.getElementById('file-size').textContent = formatFileSize(file.size);
+      document.getElementById('image-info').classList.remove('hidden');
+
+      try {
+        // 로딩 알림
+        showNotification('이미지를 압축하는 중...', 'success');
+
+        // 이미지 압축 및 리사이즈
+        const compressedImage = await compressImage(file, 1200, 0.8);
+
+        // 압축된 이미지 크기 확인
+        const compressedSize = compressedImage.length * 0.75; // base64 디코딩 후 실제 크기
+
+        // localStorage 제한 체크 (약 2MB로 제한)
+        if (compressedSize > 2 * 1024 * 1024) {
+          // 더 높은 압축률로 재시도
+          showNotification('이미지가 너무 큽니다. 더 압축하는 중...', 'success');
+          uploadedImageData = await compressImage(file, 1000, 0.6);
+        } else {
+          uploadedImageData = compressedImage;
+        }
+
+        // 압축 후 크기 표시
+        const finalSize = uploadedImageData.length * 0.75;
+        document.getElementById('file-size').textContent = formatFileSize(file.size) + ' → ' + formatFileSize(finalSize);
+
+        updatePreview();
+        showNotification('이미지가 성공적으로 업로드되었습니다!', 'success');
+      } catch (error) {
+        console.error('이미지 처리 오류:', error);
+        showNotification(error.message, 'error');
+      }
+    }
+
+    // 드래그 앤 드롭 이벤트
+    const uploadLabel = document.querySelector('label[for="banner-image"]');
+
+    uploadLabel.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      uploadLabel.classList.add('border-primary');
+    });
+
+    uploadLabel.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      uploadLabel.classList.remove('border-primary');
+    });
+
+    uploadLabel.addEventListener('drop', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      uploadLabel.classList.remove('border-primary');
+
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        handleImageUpload(files[0]);
+      }
+    });
+
+    // 파일 선택 이벤트
+    document.getElementById('banner-image').addEventListener('change', function(e) {
+      if (e.target.files && e.target.files[0]) {
+        handleImageUpload(e.target.files[0]);
+      }
+    });
+
+    // 이미지 제거
+    document.getElementById('remove-image').addEventListener('click', () => {
+      uploadedImageData = null;
+      document.getElementById('banner-image').value = '';
+      document.getElementById('image-info').classList.add('hidden');
+      updatePreview();
+    });
+
+    // 현재 배너 타입에 맞는 localStorage 키 가져오기
+    function getBannerStorageKey() {
+      return currentBannerType === 'main' ? 'bannerData' : 'patternBannerData';
+    }
+
+    // 페이지 로드 시 저장된 데이터 불러오기
+    function loadBannerData() {
+      const storageKey = getBannerStorageKey();
+      const bannerData = localStorage.getItem(storageKey);
+
+      // 폼 초기화
+      uploadedImageData = null;
+      document.getElementById('banner-active').checked = false;
+      document.getElementById('banner-link').value = '';
+      document.getElementById('banner-target-blank').checked = false;
+      document.getElementById('banner-alt').value = '';
+      document.getElementById('banner-image').value = '';
+      document.getElementById('image-info').classList.add('hidden');
+
+      if (bannerData) {
+        const data = JSON.parse(bannerData);
+        document.getElementById('banner-active').checked = data.active || false;
+        document.getElementById('banner-link').value = data.link || '';
+        document.getElementById('banner-target-blank').checked = data.targetBlank || false;
+        document.getElementById('banner-alt').value = data.alt || '';
+
+        // 저장된 이미지 데이터가 있으면 불러오기
+        if (data.image) {
+          uploadedImageData = data.image;
+          // 파일 정보 표시 (파일명과 크기는 저장된 정보 사용)
+          if (data.fileName) {
+            document.getElementById('file-name').textContent = data.fileName;
+            document.getElementById('file-size').textContent = data.fileSize || '알 수 없음';
+            document.getElementById('image-info').classList.remove('hidden');
+          }
+        }
+
+        updatePreview();
+      } else {
+        updatePreview();
+      }
+    }
+
+    // 탭 전환 함수
+    function switchBannerType(type) {
+      currentBannerType = type;
+
+      // 탭 버튼 스타일 변경
+      const mainTab = document.getElementById('tab-main-banner');
+      const patternTab = document.getElementById('tab-pattern-banner');
+
+      if (type === 'main') {
+        mainTab.className = 'flex-1 px-6 py-3 bg-primary text-black font-bold rounded-lg transition';
+        patternTab.className = 'flex-1 px-6 py-3 bg-background-dark text-white font-bold rounded-lg hover:bg-primary hover:text-black transition';
+        document.getElementById('banner-title').textContent = '상단 배너 설정 (주요기능 위)';
+      } else {
+        mainTab.className = 'flex-1 px-6 py-3 bg-background-dark text-white font-bold rounded-lg hover:bg-primary hover:text-black transition';
+        patternTab.className = 'flex-1 px-6 py-3 bg-primary text-black font-bold rounded-lg transition';
+        document.getElementById('banner-title').textContent = '패턴 분석기 배너 설정';
+      }
+
+      // 해당 배너 데이터 불러오기
+      loadBannerData();
+    }
+
+    // 미리보기 업데이트
+    function updatePreview() {
+      const linkUrl = document.getElementById('banner-link').value;
+      const alt = document.getElementById('banner-alt').value;
+      const preview = document.getElementById('banner-preview');
+
+      if (uploadedImageData) {
+        const imgElement = document.createElement('img');
+        imgElement.src = uploadedImageData;
+        imgElement.alt = alt || '배너';
+        imgElement.className = 'w-full h-auto rounded-lg object-cover max-h-[300px]';
+        imgElement.onerror = () => {
+          preview.innerHTML = '<p class="text-red-500">이미지를 불러올 수 없습니다.</p>';
+        };
+
+        if (linkUrl) {
+          const linkElement = document.createElement('a');
+          linkElement.href = linkUrl;
+          linkElement.target = document.getElementById('banner-target-blank').checked ? '_blank' : '_self';
+          linkElement.appendChild(imgElement);
+          linkElement.className = 'block hover:opacity-90 transition-opacity cursor-pointer';
+          preview.innerHTML = '';
+          preview.appendChild(linkElement);
+        } else {
+          preview.innerHTML = '';
+          preview.appendChild(imgElement);
+        }
+      } else {
+        preview.innerHTML = '<p class="text-gray-500">배너 이미지를 업로드하면 여기에 미리보기가 표시됩니다.</p>';
+      }
+    }
+
+    // 배너 저장
+    document.getElementById('save-banner').addEventListener('click', () => {
+      const active = document.getElementById('banner-active').checked;
+
+      if (!uploadedImageData && active) {
+        showNotification('배너 이미지를 업로드해주세요.', 'error');
+        return;
+      }
+
+      const bannerData = {
+        active: active,
+        image: uploadedImageData,
+        link: document.getElementById('banner-link').value,
+        targetBlank: document.getElementById('banner-target-blank').checked,
+        alt: document.getElementById('banner-alt').value,
+        fileName: document.getElementById('file-name').textContent,
+        fileSize: document.getElementById('file-size').textContent,
+      };
+
+      const storageKey = getBannerStorageKey();
+      const bannerName = currentBannerType === 'main' ? '상단 배너' : '패턴 분석기 배너';
+
+      console.log('Saving ' + bannerName + ' data:', {
+        storageKey: storageKey,
+        active: bannerData.active,
+        hasImage: !!bannerData.image,
+        imageLength: bannerData.image ? bannerData.image.length : 0,
+        link: bannerData.link,
+        targetBlank: bannerData.targetBlank,
+        alt: bannerData.alt
+      });
+
+      try {
+        // localStorage에 저장 시도
+        const jsonData = JSON.stringify(bannerData);
+        const dataSize = jsonData.length * 0.75; // 실제 크기 추정
+
+        console.log('저장할 데이터 크기:', formatFileSize(dataSize));
+        console.log('현재 localStorage 사용량:', formatFileSize(JSON.stringify(localStorage).length));
+
+        localStorage.setItem(storageKey, jsonData);
+        console.log(bannerName + ' data saved successfully to localStorage');
+        console.log('Verification - Reading back:', localStorage.getItem(storageKey) ? 'Data exists' : 'No data');
+        showNotification(bannerName + '가 저장되었습니다! 메인 페이지를 새로고침하세요.');
+      } catch (e) {
+        console.error('Error saving banner:', e);
+        if (e.name === 'QuotaExceededError') {
+          showNotification('저장 공간이 부족합니다. 이미지를 더 작게 업로드하거나 다른 배너를 삭제해주세요.', 'error');
+
+          // 해결 방법 안내
+          setTimeout(() => {
+            alert('💡 해결 방법:\n\n1. 더 작은 이미지를 업로드하세요\n2. 다른 배너를 삭제하여 공간을 확보하세요\n3. 브라우저 캐시를 삭제하세요\n\n이미지는 자동으로 압축되지만, localStorage 용량(약 5-10MB)에는 제한이 있습니다.');
+          }, 1000);
+        } else {
+          showNotification('저장 중 오류가 발생했습니다: ' + e.message, 'error');
+        }
+      }
+    });
+
+    // 저장하고 메인 페이지에서 확인하기
+    document.getElementById('save-and-preview').addEventListener('click', () => {
+      const active = document.getElementById('banner-active').checked;
+
+      if (!uploadedImageData && active) {
+        showNotification('배너 이미지를 업로드해주세요.', 'error');
+        return;
+      }
+
+      const bannerData = {
+        active: active,
+        image: uploadedImageData,
+        link: document.getElementById('banner-link').value,
+        targetBlank: document.getElementById('banner-target-blank').checked,
+        alt: document.getElementById('banner-alt').value,
+        fileName: document.getElementById('file-name').textContent,
+        fileSize: document.getElementById('file-size').textContent,
+      };
+
+      const storageKey = getBannerStorageKey();
+      const bannerName = currentBannerType === 'main' ? '상단 배너' : '패턴 분석기 배너';
+
+      try {
+        // localStorage에 저장 시도
+        const jsonData = JSON.stringify(bannerData);
+        const dataSize = jsonData.length * 0.75; // 실제 크기 추정
+
+        console.log('저장할 데이터 크기:', formatFileSize(dataSize));
+        console.log('현재 localStorage 사용량:', formatFileSize(JSON.stringify(localStorage).length));
+
+        localStorage.setItem(storageKey, jsonData);
+        console.log(bannerName + ' data saved successfully');
+        showNotification(bannerName + '가 저장되었습니다! 메인 페이지로 이동합니다...');
+
+        // 1초 후 메인 페이지로 이동
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 1000);
+      } catch (e) {
+        console.error('Error saving banner:', e);
+        if (e.name === 'QuotaExceededError') {
+          showNotification('저장 공간이 부족합니다. 이미지를 더 작게 업로드하거나 다른 배너를 삭제해주세요.', 'error');
+
+          // 해결 방법 안내
+          setTimeout(() => {
+            alert('💡 해결 방법:\n\n1. 더 작은 이미지를 업로드하세요\n2. 다른 배너를 삭제하여 공간을 확보하세요\n3. 브라우저 캐시를 삭제하세요\n\n이미지는 자동으로 압축되지만, localStorage 용량(약 5-10MB)에는 제한이 있습니다.');
+          }, 1000);
+        } else {
+          showNotification('저장 중 오류가 발생했습니다: ' + e.message, 'error');
+        }
+      }
+    });
+
+    // 배너 삭제
+    document.getElementById('delete-banner').addEventListener('click', () => {
+      const storageKey = getBannerStorageKey();
+      const bannerName = currentBannerType === 'main' ? '상단 배너' : '패턴 분석기 배너';
+
+      if (confirm(bannerName + '를 삭제하시겠습니까?')) {
+        localStorage.removeItem(storageKey);
+        uploadedImageData = null;
+        document.getElementById('banner-active').checked = false;
+        document.getElementById('banner-image').value = '';
+        document.getElementById('banner-link').value = '';
+        document.getElementById('banner-target-blank').checked = false;
+        document.getElementById('banner-alt').value = '';
+        document.getElementById('image-info').classList.add('hidden');
+        updatePreview();
+        showNotification(bannerName + '가 삭제되었습니다.');
+      }
+    });
+
+    // 입력 필드 변경 시 미리보기 업데이트
+    document.getElementById('banner-link').addEventListener('input', updatePreview);
+    document.getElementById('banner-target-blank').addEventListener('change', updatePreview);
+    document.getElementById('banner-alt').addEventListener('input', updatePreview);
+
+    // 탭 버튼 이벤트 리스너
+    document.getElementById('tab-main-banner').addEventListener('click', () => {
+      switchBannerType('main');
+    });
+
+    document.getElementById('tab-pattern-banner').addEventListener('click', () => {
+      switchBannerType('pattern');
+    });
+
+    // 페이지 로드 시 실행
+    loadBannerData();
+  </script>
+</body>
+</html>
